@@ -6,47 +6,70 @@
   <title>Pasaulinukai</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 0;
-      background: #f9f9f9;
-      color: #333;
+      background: #0a0a0a;
+      color: #e0f7ff;
       text-align: center;
     }
     header {
-      background: #222;
-      color: white;
-      padding: 20px;
+      background: linear-gradient(90deg, #00111a, #002233);
+      color: #00eaff;
+      padding: 30px;
+      text-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff;
     }
-    header h1 { margin: 0; }
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+    }
+    header p {
+      margin-top: 10px;
+      font-style: italic;
+    }
     .btn {
       display: inline-block;
-      margin: 10px;
-      padding: 10px 20px;
+      margin: 12px;
+      padding: 12px 28px;
       border: none;
-      border-radius: 8px;
-      background: #007bff;
-      color: white;
-      cursor: pointer;
+      border-radius: 50px;
+      background: #003344;
+      color: #00eaff;
       font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px #00eaff;
+    }
+    .btn:hover:not(:disabled) {
+      background: #00eaff;
+      color: #00111a;
+      box-shadow: 0 0 20px #00eaff, 0 0 40px #00eaff;
     }
     .btn:disabled {
-      background: #aaa;
+      background: #111;
+      color: #555;
+      box-shadow: none;
       cursor: not-allowed;
     }
     .step {
       display: none;
-      padding: 20px;
+      padding: 30px;
+      animation: fadeIn 0.7s ease;
     }
     .active {
       display: block;
     }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
     footer {
-      margin-top: 40px;
+      margin-top: 50px;
       padding: 20px;
       font-size: 14px;
-      color: #555;
-      border-top: 1px solid #ddd;
+      color: #00eaff;
+      border-top: 1px solid #003344;
+      text-shadow: 0 0 10px #00eaff;
     }
   </style>
 </head>
@@ -59,74 +82,76 @@
   <main>
     <!-- Titulinis -->
     <section id="home" class="step active">
-      <button class="btn" disabled>Browse shop</button>
-      <button class="btn" onclick="nextStep('order1')">Order custom</button>
+      <button class="btn" disabled>Peržiūrėti parduotuvę</button>
+      <button class="btn" onclick="nextStep('order1')">Užsisakyti pagal užsakymą</button>
     </section>
 
     <!-- Order custom flow -->
     <section id="order1" class="step">
       <h2>Pasirinkite objektą</h2>
-      <button class="btn" onclick="nextStep('order2')">Next</button>
-      <button class="btn" onclick="backStep('home')">Back</button>
+      <button class="btn" onclick="nextStep('order2')">Kitas</button>
+      <button class="btn" onclick="backStep('home')">Atgal</button>
     </section>
 
     <section id="order2" class="step">
       <h2>Su ar be GPS sekiklio?</h2>
-      <button class="btn" onclick="nextStep('order3')">Next</button>
-      <button class="btn" onclick="backStep('order1')">Back</button>
+      <button class="btn" onclick="nextStep('order3')">Kitas</button>
+      <button class="btn" onclick="backStep('order1')">Atgal</button>
     </section>
 
     <section id="order3" class="step">
-      <h2>Įrašykite tekstą arba spauskite Skip</h2>
-      <button class="btn" onclick="nextStep('order4')">Next</button>
-      <button class="btn" onclick="nextStep('order4')">Skip</button>
-      <button class="btn" onclick="backStep('order2')">Back</button>
+      <h2>Įrašykite tekstą arba spauskite Praleisti</h2>
+      <button class="btn" onclick="nextStep('order4')">Kitas</button>
+      <button class="btn" onclick="nextStep('order4')">Praleisti</button>
+      <button class="btn" onclick="backStep('order2')">Atgal</button>
     </section>
 
     <section id="order4" class="step">
       <h2>Pasirinkite spalvas</h2>
-      <button class="btn" onclick="nextStep('order5')">Next</button>
-      <button class="btn" onclick="backStep('order3')">Back</button>
+      <input type="color" value="#00eaff">
+      <button class="btn" onclick="nextStep('order5')">Kitas</button>
+      <button class="btn" onclick="backStep('order3')">Atgal</button>
     </section>
 
     <section id="order5" class="step">
-      <h2>Pridėti daugiau ar skip?</h2>
-      <button class="btn" onclick="nextStep('addmore')">Add more</button>
-      <button class="btn" onclick="nextStep('payment')">Skip</button>
-      <button class="btn" onclick="backStep('order4')">Back</button>
+      <h2>Pridėti daugiau ar praleisti?</h2>
+      <button class="btn" onclick="nextStep('addmore')">Pridėti daugiau</button>
+      <button class="btn" onclick="nextStep('payment')">Praleisti</button>
+      <button class="btn" onclick="backStep('order4')">Atgal</button>
     </section>
 
     <section id="addmore" class="step">
       <h2>Pasirinkite papildymą</h2>
-      <button class="btn" onclick="nextStep('figure')">Add figure</button>
-      <button class="btn" onclick="nextStep('numberdate')">Add number/date</button>
-      <button class="btn" onclick="backStep('order5')">Back</button>
+      <button class="btn" onclick="nextStep('figure')">Pridėti figūrėlę</button>
+      <button class="btn" onclick="nextStep('numberdate')">Pridėti skaičių/datą</button>
+      <button class="btn" onclick="backStep('order5')">Atgal</button>
     </section>
 
     <section id="figure" class="step">
       <h2>Pasirinkite figūrėlę</h2>
-      <button class="btn" onclick="nextStep('payment')">Next</button>
-      <button class="btn" onclick="nextStep('numberdate')">Add number/date</button>
-      <button class="btn" onclick="backStep('addmore')">Back</button>
+      <button class="btn" onclick="nextStep('payment')">Kitas</button>
+      <button class="btn" onclick="nextStep('numberdate')">Pridėti skaičių/datą</button>
+      <button class="btn" onclick="backStep('addmore')">Atgal</button>
     </section>
 
     <section id="numberdate" class="step">
       <h2>Įveskite skaičių arba datą</h2>
-      <button class="btn" onclick="nextStep('payment')">Next</button>
-      <button class="btn" onclick="nextStep('figure')">Add figure</button>
-      <button class="btn" onclick="backStep('addmore')">Back</button>
+      <button class="btn" onclick="nextStep('payment')">Kitas</button>
+      <button class="btn" onclick="nextStep('figure')">Pridėti figūrėlę</button>
+      <button class="btn" onclick="backStep('addmore')">Atgal</button>
     </section>
 
     <section id="payment" class="step">
       <h2>Apmokėjimas ir pristatymo data</h2>
-      <button class="btn" onclick="nextStep('home')">Finish</button>
-      <button class="btn" onclick="nextStep('home')">Cancel</button>
-      <button class="btn" onclick="backStep('order5')">Back</button>
+      <p style="color:#888;">(Šis puslapis yra tik prototipas – mygtukai neveikia)</p>
+      <button class="btn" disabled>Apmokėti</button>
+      <button class="btn" disabled>Atšaukti</button>
+      <button class="btn" onclick="backStep('order5')">Atgal</button>
     </section>
   </main>
 
   <footer>
-    <p>Website made by Airidas Naudžius</p>
+    <p>Svetainė sukurta Airido Naudžiaus</p>
     <p>All rights reserved Pasaulinukai 2025</p>
   </footer>
 
