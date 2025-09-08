@@ -23,10 +23,6 @@
       margin: 0;
       font-size: 2.5em;
     }
-    header p {
-      margin-top: 10px;
-      font-style: italic;
-    }
     .btn {
       display: inline-block;
       margin: 12px;
@@ -51,6 +47,14 @@
       box-shadow: none;
       cursor: not-allowed;
     }
+    input, textarea, select {
+      margin: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+    }
     .step {
       display: none;
       padding: 30px;
@@ -71,12 +75,24 @@
       border-top: 1px solid #003344;
       text-shadow: 0 0 10px #00eaff;
     }
+    .contacts p {
+      margin: 6px;
+    }
+    .disabled-link {
+      color: #555;
+      text-decoration: line-through;
+    }
+    .price {
+      font-size: 20px;
+      margin: 20px;
+      color: #00eaff;
+      text-shadow: 0 0 10px #00eaff;
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>Pasaulinukai</h1>
-    <p>Unikalūs sprendimai jūsų poreikiams</p>
   </header>
 
   <main>
@@ -89,6 +105,7 @@
     <!-- Order custom flow -->
     <section id="order1" class="step">
       <h2>Pasirinkite objektą</h2>
+      <input type="text" id="objectInput" placeholder="Įveskite objektą">
       <button class="btn" onclick="nextStep('order2')">Kitas</button>
       <button class="btn" onclick="backStep('home')">Atgal</button>
     </section>
@@ -101,6 +118,7 @@
 
     <section id="order3" class="step">
       <h2>Įrašykite tekstą arba spauskite Praleisti</h2>
+      <textarea id="customText" placeholder="Įveskite tekstą"></textarea><br>
       <button class="btn" onclick="nextStep('order4')">Kitas</button>
       <button class="btn" onclick="nextStep('order4')">Praleisti</button>
       <button class="btn" onclick="backStep('order2')">Atgal</button>
@@ -108,7 +126,7 @@
 
     <section id="order4" class="step">
       <h2>Pasirinkite spalvas</h2>
-      <input type="color" value="#00eaff">
+      <input type="color" id="colorPicker" value="#00eaff"><br>
       <button class="btn" onclick="nextStep('order5')">Kitas</button>
       <button class="btn" onclick="backStep('order3')">Atgal</button>
     </section>
@@ -124,11 +142,13 @@
       <h2>Pasirinkite papildymą</h2>
       <button class="btn" onclick="nextStep('figure')">Pridėti figūrėlę</button>
       <button class="btn" onclick="nextStep('numberdate')">Pridėti skaičių/datą</button>
+      <button class="btn" onclick="nextStep('surprise')">Nustebink mane</button>
       <button class="btn" onclick="backStep('order5')">Atgal</button>
     </section>
 
     <section id="figure" class="step">
       <h2>Pasirinkite figūrėlę</h2>
+      <input type="text" placeholder="Įveskite figūrėlės tipą">
       <button class="btn" onclick="nextStep('payment')">Kitas</button>
       <button class="btn" onclick="nextStep('numberdate')">Pridėti skaičių/datą</button>
       <button class="btn" onclick="backStep('addmore')">Atgal</button>
@@ -136,17 +156,38 @@
 
     <section id="numberdate" class="step">
       <h2>Įveskite skaičių arba datą</h2>
+      <input type="text" placeholder="Pvz. 2025">
       <button class="btn" onclick="nextStep('payment')">Kitas</button>
       <button class="btn" onclick="nextStep('figure')">Pridėti figūrėlę</button>
       <button class="btn" onclick="backStep('addmore')">Atgal</button>
     </section>
 
+    <section id="surprise" class="step">
+      <h2>Nustebink mane 🎲</h2>
+      <p>Atsitiktinis pasirinkimas bus parinktas už jus.</p>
+      <button class="btn" onclick="nextStep('payment')">Tęsti</button>
+      <button class="btn" onclick="backStep('addmore')">Atgal</button>
+    </section>
+
     <section id="payment" class="step">
       <h2>Apmokėjimas ir pristatymo data</h2>
-      <p style="color:#888;">(Šis puslapis yra tik prototipas – mygtukai neveikia)</p>
+      <p class="price">Kaina: €49.99 <br><span style="color:#888; font-size:14px;">(išjungta tik demonstracijai)</span></p>
       <button class="btn" disabled>Apmokėti</button>
       <button class="btn" disabled>Atšaukti</button>
       <button class="btn" onclick="backStep('order5')">Atgal</button>
+    </section>
+
+    <!-- Kontaktai -->
+    <section id="contacts" class="step">
+      <h2>Kontaktai</h2>
+      <div class="contacts">
+        <p>Messenger: Naglis Chmieliauskas</p>
+        <p class="disabled-link">Facebook</p>
+        <p class="disabled-link">TikTok</p>
+        <p class="disabled-link">Instagram</p>
+        <p class="disabled-link">Gmail</p>
+      </div>
+      <button class="btn" onclick="backStep('home')">Atgal</button>
     </section>
   </main>
 
