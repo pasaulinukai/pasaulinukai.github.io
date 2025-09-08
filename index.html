@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pasaulinukai</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #333;
+      text-align: center;
+    }
+    header {
+      background: #222;
+      color: white;
+      padding: 20px;
+    }
+    header h1 { margin: 0; }
+    .btn {
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .btn:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+    .step {
+      display: none;
+      padding: 20px;
+    }
+    .active {
+      display: block;
+    }
+    footer {
+      margin-top: 40px;
+      padding: 20px;
+      font-size: 14px;
+      color: #555;
+      border-top: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pasaulinukai</h1>
+    <p>Unikalūs sprendimai jūsų poreikiams</p>
+  </header>
+
+  <main>
+    <!-- Titulinis -->
+    <section id="home" class="step active">
+      <button class="btn" disabled>Browse shop</button>
+      <button class="btn" onclick="nextStep('order1')">Order custom</button>
+    </section>
+
+    <!-- Order custom flow -->
+    <section id="order1" class="step">
+      <h2>Pasirinkite objektą</h2>
+      <button class="btn" onclick="nextStep('order2')">Next</button>
+      <button class="btn" onclick="backStep('home')">Back</button>
+    </section>
+
+    <section id="order2" class="step">
+      <h2>Su ar be GPS sekiklio?</h2>
+      <button class="btn" onclick="nextStep('order3')">Next</button>
+      <button class="btn" onclick="backStep('order1')">Back</button>
+    </section>
+
+    <section id="order3" class="step">
+      <h2>Įrašykite tekstą arba spauskite Skip</h2>
+      <button class="btn" onclick="nextStep('order4')">Next</button>
+      <button class="btn" onclick="nextStep('order4')">Skip</button>
+      <button class="btn" onclick="backStep('order2')">Back</button>
+    </section>
+
+    <section id="order4" class="step">
+      <h2>Pasirinkite spalvas</h2>
+      <button class="btn" onclick="nextStep('order5')">Next</button>
+      <button class="btn" onclick="backStep('order3')">Back</button>
+    </section>
+
+    <section id="order5" class="step">
+      <h2>Pridėti daugiau ar skip?</h2>
+      <button class="btn" onclick="nextStep('addmore')">Add more</button>
+      <button class="btn" onclick="nextStep('payment')">Skip</button>
+      <button class="btn" onclick="backStep('order4')">Back</button>
+    </section>
+
+    <section id="addmore" class="step">
+      <h2>Pasirinkite papildymą</h2>
+      <button class="btn" onclick="nextStep('figure')">Add figure</button>
+      <button class="btn" onclick="nextStep('numberdate')">Add number/date</button>
+      <button class="btn" onclick="backStep('order5')">Back</button>
+    </section>
+
+    <section id="figure" class="step">
+      <h2>Pasirinkite figūrėlę</h2>
+      <button class="btn" onclick="nextStep('payment')">Next</button>
+      <button class="btn" onclick="nextStep('numberdate')">Add number/date</button>
+      <button class="btn" onclick="backStep('addmore')">Back</button>
+    </section>
+
+    <section id="numberdate" class="step">
+      <h2>Įveskite skaičių arba datą</h2>
+      <button class="btn" onclick="nextStep('payment')">Next</button>
+      <button class="btn" onclick="nextStep('figure')">Add figure</button>
+      <button class="btn" onclick="backStep('addmore')">Back</button>
+    </section>
+
+    <section id="payment" class="step">
+      <h2>Apmokėjimas ir pristatymo data</h2>
+      <button class="btn" onclick="nextStep('home')">Finish</button>
+      <button class="btn" onclick="nextStep('home')">Cancel</button>
+      <button class="btn" onclick="backStep('order5')">Back</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>Website made by Airidas Naudžius</p>
+    <p>All rights reserved Pasaulinukai 2025</p>
+  </footer>
+
+  <script>
+    function nextStep(id) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+    function backStep(id) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+  </script>
+</body>
+</html>
