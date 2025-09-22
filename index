@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Five Nights at Airidas's</title>
+  <style>
+    body { text-align: center; background: black; color: white; font-family: Arial; }
+    #game { margin-top: 50px; }
+    button { font-size: 20px; margin: 10px; padding: 10px 20px; }
+    #monster { font-size: 80px; display: none; margin: 20px; }
+    #message { font-size: 24px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Five Nights at Airidas's</h1>
+  <div id="game">
+    <button onclick="check('left')">Check Left</button>
+    <button onclick="check('right')">Check Right</button>
+    <div id="monster">👹</div>
+    <div id="message">Survive the night!</div>
+  </div>
+  <script>
+    let monsterSide = null;
+    let alive = true;
+
+    function spawnMonster() {
+      if (!alive) return;
+      monsterSide = Math.random() > 0.5 ? 'left' : 'right';
+      document.getElementById("monster").style.display = "block";
+      document.getElementById("message").textContent = "Something is there!";
+      setTimeout(() => {
+        if (alive) {
+          gameOver();
+        }
+      }, 3000); // 3 seconds to react
+    }
+
+    function check(side) {
+      if (!alive) return;
+      if (side === monsterSide) {
+        document.getElementById("message").textContent = "You scared it away!";
+        document.getElementById("monster").style.display = "none";
+        monsterSide = null;
+        setTimeout(spawnMonster, 2000);
+      } else {
+        document.getElementById("message").textContent = "Nothing here...";
+      }
+    }
+
+    function gameOver() {
+      alive = false;
+      document.getElementById("message").textContent = "Game Over - You were caught!";
+      document.getElementById("monster").textContent = "💀";
+    }
+
+    setTimeout(spawnMonster, 2000); // Start game
+  </script>
+</body>
+</html>
