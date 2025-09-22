@@ -1,136 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="lt">
 <head>
   <meta charset="UTF-8">
-  <title>Five Nights at Airidas's (FNAA)</title>
+  <title>Pasaulinukai LT</title>
   <style>
-    body { background: black; color: white; font-family: Arial; text-align: center; }
-    #office, #cameras, #gameover, #win { display: none; }
-    #enemy { font-size: 80px; margin: 20px; display: none; }
-    button { font-size: 18px; margin: 10px; padding: 10px 20px; }
-    #view { font-size: 24px; margin: 20px; }
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      flex-direction: column;
+    }
+    h1 { font-size: 48px; margin-bottom: 20px; }
+    p { font-size: 24px; }
   </style>
 </head>
 <body>
-  <h1>Five Nights at Airidas's</h1>
-  <div id="start">
-    <button onclick="startGame()">Start Night</button>
-  </div>
-
-  <div id="office">
-    <h2>Office View</h2>
-    <p id="view">Looking forward</p>
-    <button onclick="showCameras()">Open Cameras</button>
-    <p id="timer">Time left: 60</p>
-    <div id="enemy">👹</div>
-  </div>
-
-  <div id="cameras">
-    <h2>Camera View</h2>
-    <p id="enemyLocation">Enemy is far away...</p>
-    <button onclick="closeCameras()">Close Cameras</button>
-  </div>
-
-  <div id="gameover">
-    <h2>💀 Game Over! 💀</h2>
-  </div>
-
-  <div id="win">
-    <h2>🎉 You Survived the Night! 🎉</h2>
-  </div>
-
-  <script>
-    let timeLeft = 60;
-    let enemyStage = 0; // 0=far, 1=closer, 2=at door
-    let gameRunning = false;
-    let timerInterval, enemyInterval;
-    let currentView = "forward"; // forward, left, right
-
-    function startGame() {
-      document.getElementById("start").style.display = "none";
-      document.getElementById("office").style.display = "block";
-      timeLeft = 60;
-      enemyStage = 0;
-      gameRunning = true;
-      document.getElementById("timer").textContent = "Time left: " + timeLeft;
-      document.getElementById("enemy").style.display = "none";
-      
-      timerInterval = setInterval(countdown, 1000);
-      enemyInterval = setInterval(moveEnemy, 5000);
-    }
-
-    function countdown() {
-      if (!gameRunning) return;
-      timeLeft--;
-      document.getElementById("timer").textContent = "Time left: " + timeLeft;
-      if (timeLeft <= 0) {
-        winGame();
-      }
-    }
-
-    function moveEnemy() {
-      if (!gameRunning) return;
-      enemyStage++;
-      if (enemyStage === 1) {
-        document.getElementById("enemyLocation").textContent = "Enemy is moving closer...";
-      } else if (enemyStage === 2) {
-        document.getElementById("enemyLocation").textContent = "Enemy is outside your office!";
-      } else if (enemyStage >= 3) {
-        gameOver();
-      }
-    }
-
-    function showCameras() {
-      document.getElementById("office").style.display = "none";
-      document.getElementById("cameras").style.display = "block";
-    }
-
-    function closeCameras() {
-      document.getElementById("cameras").style.display = "none";
-      document.getElementById("office").style.display = "block";
-    }
-
-    function gameOver() {
-      gameRunning = false;
-      clearInterval(timerInterval);
-      clearInterval(enemyInterval);
-      document.getElementById("office").style.display = "none";
-      document.getElementById("cameras").style.display = "none";
-      document.getElementById("gameover").style.display = "block";
-    }
-
-    function winGame() {
-      gameRunning = false;
-      clearInterval(timerInterval);
-      clearInterval(enemyInterval);
-      document.getElementById("office").style.display = "none";
-      document.getElementById("cameras").style.display = "none";
-      document.getElementById("win").style.display = "block";
-    }
-
-    // WASD movement inside office
-    document.addEventListener("keydown", (e) => {
-      if (!gameRunning) return;
-      if (e.key === "a" || e.key === "A") {
-        currentView = "left";
-        document.getElementById("view").textContent = "Looking left";
-      }
-      if (e.key === "d" || e.key === "D") {
-        currentView = "right";
-        document.getElementById("view").textContent = "Looking right";
-      }
-      if (e.key === "w" || e.key === "W") {
-        currentView = "forward";
-        document.getElementById("view").textContent = "Looking forward";
-      }
-
-      // Enemy appears when looking forward and it's at the door
-      if (currentView === "forward" && enemyStage === 2) {
-        document.getElementById("enemy").style.display = "block";
-      } else {
-        document.getElementById("enemy").style.display = "none";
-      }
-    });
-  </script>
+  <h1>Pasaulinukai LT</h1>
+  <p>Ši svetainė yra kuriama</p>
+  <p>Numatoma pabaigos data: 1.12.2025</p>
 </body>
 </html>
