@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pasaulinukai Lietuva - Maintenance</title>
+<title>Pasaulinukai Lietuva</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
@@ -23,41 +23,153 @@ body{
 h1{font-size:2.5rem;font-weight:700;background:linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 h2.slogan{font-size:1.2rem;color:rgba(20,20,20,0.75);}
-button{cursor:pointer;background:linear-gradient(90deg,#7bbfff,#a3d5ff);color:#fff;font-weight:600;
-  transition:transform 0.2s ease,box-shadow 0.3s ease;padding:12px 20px;border-radius:12px;border:none;}
+.btn-link{display:inline-block;margin-top:10px;padding:10px 20px;background:#007aff;color:#fff;
+  border-radius:12px;text-decoration:none;font-weight:600;}
+button{cursor:pointer;background:linear-gradient(90deg,#b0d4ff,#a3d5ff);color:#fff;font-weight:600;
+  transition:transform 0.2s ease,box-shadow 0.3s ease;padding:12px 16px;border-radius:12px;border:none;font-size:1rem;}
 button:hover{transform:scale(1.05);box-shadow:0 0 20px rgba(123,175,255,0.5);}
-#adminSection{display:none;margin-top:20px;}
+input,select{padding:12px 16px;border-radius:12px;border:none;font-size:1rem;outline:none;width:100%;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.prototype-message{background:rgba(255,255,255,0.3);border-radius:18px;padding:15px 20px;
+  backdrop-filter:blur(15px)saturate(160%);-webkit-backdrop-filter:blur(15px) saturate(160%);
+  border:1px solid rgba(255,255,255,0.4);font-size:1rem;color:rgba(0,0,0,0.85);}
+.hidden{display:none;}
 </style>
 </head>
 <body>
-<div class="glass" id="glassBox">
-  <h1>Svetainė šiuo metu neveikia</h1>
-  <h2 class="slogan">Atsiprašome, prototipo demonstracija laikinai išjungta</h2>
-  <button id="devBtn">Developer Options</button>
-  <div id="adminSection">
-    <p>Įveskite admin kodą:</p>
-    <input type="password" id="adminCodeInput" placeholder="Enter code">
-    <button id="unlockBtn">Unlock</button>
+
+<div class="glass" id="bannerBox">
+  <h1>Svetainė neveikia</h1>
+  <p>Šiuo metu svetainė yra laikinai sustabdyta.</p>
+  <button onclick="showAdminPrompt()">Developer Options</button>
+</div>
+
+<div class="glass hidden" id="prototypeBox">
+  <h1>Pasaulinukai Lietuva</h1>
+  <h2 class="slogan">Pasaulis ant tavo raktų</h2>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog"
+     target="_blank" class="btn-link">Užpildyti per Google Forms</a>
+  <p>Arba tęskite užsakymą svetainėje:</p>
+
+  <!-- Step 1 -->
+  <div class="step active" id="step1">
+    <label for="type">Pasirinkite tipą:</label>
+    <select id="type">
+      <option value="3D spausdinimas">3D spausdinimas (€12)</option>
+      <option value="Medžio graviravimas">Medžio graviravimas (€4.99)</option>
+    </select>
+    <label for="object">Įveskite objektą:</label>
+    <input type="text" id="object" placeholder="Įveskite figūrą ar gyvūną">
+    <div class="btn-row"><button onclick="validateAndNext(2)">Toliau</button></div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step" id="step2">
+    <label for="customText">Įveskite tekstą (max 8 raidės):</label>
+    <input type="text" id="customText" maxlength="8" placeholder="Tekstas">
+    <div class="btn-row">
+      <button onclick="prevStep(1)">Atgal</button>
+      <button onclick="nextStep(3)">Toliau</button>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step" id="step3">
+    <label for="color">Pasirinkite spalvą:</label>
+    <select id="color">
+      <option value="Pilka">Pilka (numatyta)</option>
+      <option value="Raudona">Raudona</option>
+      <option value="Mėlyna">Mėlyna</option>
+      <option value="Žalia">Žalia</option>
+      <option value="Juoda">Juoda</option>
+      <option value="Balta">Balta</option>
+      <option value="Artimiausia">Artimiausia pasirinktam objektui</option>
+    </select>
+    <div class="btn-row">
+      <button onclick="prevStep(2)">Atgal</button>
+      <button onclick="showSummary()">Baigti</button>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="step" id="step4">
+    <h3>Užsakymo santrauka</h3>
+    <p id="summaryText"></p>
+    <form id="orderForm" action="https://formspree.io/f/mgvnyvbv" method="POST">
+      <label>Tipas:</label><input type="text" name="type" id="formType" readonly>
+      <label>Objektas:</label><input type="text" name="object" id="formObject" readonly>
+      <label>Tekstas:</label><input type="text" name="customText" id="formText" readonly>
+      <label>Spalva:</label><input type="text" name="color" id="formColor" readonly>
+      <label>Kaina (€):</label><input type="text" name="price" id="formPrice" readonly>
+      <label>Pilnas vardas:</label><input type="text" name="fullname" required>
+      <label>El. paštas:</label><input type="email" name="email" required>
+      <label>Telefono numeris:</label><input type="tel" name="phone" required>
+      <label>Pageidaujamas kontaktas:</label>
+      <select name="contactMethod" required>
+        <option value="email">El. paštas</option>
+        <option value="sms">SMS</option>
+      </select>
+      <button type="submit">Siųsti užklausą</button>
+    </form>
+    <div class="btn-row"><button onclick="resetOrder()">Pradėti naują</button></div>
   </div>
 </div>
 
 <footer><p>All rights reserved Pasaulinukai 2025</p></footer>
 
 <script>
-// Show admin input on click
-document.getElementById("devBtn").addEventListener("click", () => {
-  document.getElementById("adminSection").style.display = "block";
-});
+let currentStep=1;
+let order={type:"",object:"",text:"",color:"",price:0};
 
-// Unlock original site if correct code
-document.getElementById("unlockBtn").addEventListener("click", () => {
-  const code = document.getElementById("adminCodeInput").value;
-  if(code === "0427"){
-    window.location.href = "index"; // Replace with your actual file name
-  } else {
-    alert("Neteisingas kodas");
-  }
-});
+function showAdminPrompt(){
+  let code=prompt("Enter admin code:");
+  if(code==="0427"){
+    document.getElementById('bannerBox').classList.add('hidden');
+    document.getElementById('prototypeBox').classList.remove('hidden');
+  }else alert("Neteisingas kodas");
+}
+
+function nextStep(step){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step'+step).classList.add('active');
+  currentStep=step;
+}
+function prevStep(step){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step'+step).classList.add('active');
+  currentStep=step;
+}
+function validateAndNext(step){
+  const type=document.getElementById("type").value;
+  const obj=document.getElementById("object").value.trim();
+  if(!obj){alert("Įveskite objektą prieš tęsiant.");return;}
+  order.type=type;order.object=obj;nextStep(step);
+}
+function calculatePrice(){order.price=(order.type.includes("3D"))?12.00:4.99;}
+function showSummary(){
+  order.text=document.getElementById("customText").value.trim();
+  order.color=document.getElementById("color").value;
+  calculatePrice();
+  const summary=`
+  <strong>Tipas:</strong> ${order.type}<br>
+  <strong>Objektas:</strong> ${order.object}<br>
+  <strong>Tekstas:</strong> ${order.text||"—"}<br>
+  <strong>Spalva:</strong> ${order.color}<br>
+  <strong>Kaina:</strong> €${order.price.toFixed(2)}
+  `;
+  document.getElementById("summaryText").innerHTML=summary;
+  document.getElementById("formType").value=order.type;
+  document.getElementById("formObject").value=order.object;
+  document.getElementById("formText").value=order.text;
+  document.getElementById("formColor").value=order.color;
+  document.getElementById("formPrice").value=order.price.toFixed(2);
+  nextStep(4);
+}
+function resetOrder(){
+  order={type:"",object:"",text:"",color:"",price:0};
+  document.getElementById("orderForm").reset();
+  nextStep(1);
+}
 </script>
 </body>
 </html>
