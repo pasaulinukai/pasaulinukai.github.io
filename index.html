@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pasaulinukai Lietuva - Maintenance</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:radial-gradient(circle at top center,#b9fbc0,#a3d5ff);
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;color:#111;overflow-x:hidden;
+}
+.glass{
+  margin-top:4vh;background:rgba(255,255,255,0.25);border-radius:28px;padding:30px 40px;
+  backdrop-filter:blur(25px)saturate(180%);-webkit-backdrop-filter:blur(25px)saturate(180%);
+  border:1px solid rgba(255,255,255,0.3);box-shadow:0 12px 40px rgba(0,0,0,0.25),
+  inset 0 0 40px rgba(255,255,255,0.05),0 0 80px rgba(255,255,255,0.2);
+  width:90%;max-width:850px;display:flex;flex-direction:column;gap:20px;text-align:center;
+  transform:translateY(20px);transition:all 0.6s ease;animation:floaty 5s ease-in-out infinite;
+}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+h1{font-size:2.5rem;font-weight:700;background:linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+h2.slogan{font-size:1.2rem;color:rgba(20,20,20,0.75);}
+button{cursor:pointer;background:linear-gradient(90deg,#7bbfff,#a3d5ff);color:#fff;font-weight:600;
+  transition:transform 0.2s ease,box-shadow 0.3s ease;padding:12px 20px;border-radius:12px;border:none;}
+button:hover{transform:scale(1.05);box-shadow:0 0 20px rgba(123,175,255,0.5);}
+#adminSection{display:none;margin-top:20px;}
+</style>
+</head>
+<body>
+<div class="glass" id="glassBox">
+  <h1>Svetainė šiuo metu neveikia</h1>
+  <h2 class="slogan">Atsiprašome, prototipo demonstracija laikinai išjungta</h2>
+  <button id="devBtn">Developer Options</button>
+  <div id="adminSection">
+    <p>Įveskite admin kodą:</p>
+    <input type="password" id="adminCodeInput" placeholder="Enter code">
+    <button id="unlockBtn">Unlock</button>
+  </div>
+</div>
+
+<footer><p>All rights reserved Pasaulinukai 2025</p></footer>
+
+<script>
+// Show admin input on click
+document.getElementById("devBtn").addEventListener("click", () => {
+  document.getElementById("adminSection").style.display = "block";
+});
+
+// Unlock original site if correct code
+document.getElementById("unlockBtn").addEventListener("click", () => {
+  const code = document.getElementById("adminCodeInput").value;
+  if(code === "0427"){
+    window.location.href = "index"; // Replace with your actual file name
+  } else {
+    alert("Neteisingas kodas");
+  }
+});
+</script>
+</body>
+</html>
