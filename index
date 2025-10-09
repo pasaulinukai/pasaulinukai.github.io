@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="lt">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Pasaulinukai Lietuva</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -37,12 +37,16 @@ button:hover{transform:scale(1.05);box-shadow:0 0 20px rgba(123,175,255,0.5);}
   border:1px solid rgba(255,255,255,0.4);font-size:1rem;color:rgba(0,0,0,0.85);}
 footer{font-size:0.95rem;opacity:0.85;padding:25px;text-align:center;}
 footer p{margin:5px 0;}
+.promo-row{display:flex;gap:10px;align-items:center;}
+.promo-info{font-size:0.95rem;color:rgba(0,0,0,0.7);}
+.notice{font-size:0.9rem;color:#0b5;padding:8px;background:rgba(0,0,0,0.03);border-radius:8px;}
 </style>
 </head>
 <body>
 <div class="glass" id="glassBox">
   <h1>Pasaulinukai Lietuva</h1>
   <h2 class="slogan">Pasaulis ant tavo raktų</h2>
+
   <a href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog"
      target="_blank" class="btn-link">Užpildyti per Google Forms</a>
   <p>Arba tęskite užsakymą svetainėje:</p>
@@ -81,6 +85,17 @@ footer p{margin:5px 0;}
       <option value="Balta">Balta</option>
       <option value="Artimiausia">Artimiausia pasirinktam objektui</option>
     </select>
+
+    <!-- Promo code row -->
+    <div style="margin-top:10px;">
+      <label for="promo">Akcijos kodas (jei turite):</label>
+      <div class="promo-row">
+        <input id="promo" placeholder="Įveskite akcijos kodą">
+        <button type="button" id="applyPromoBtn">Apply</button>
+      </div>
+      <div id="promoMessage" class="promo-info" style="margin-top:8px;"></div>
+    </div>
+
     <div class="btn-row">
       <button onclick="prevStep(2)">Atgal</button>
       <button onclick="showSummary()">Baigti</button>
@@ -115,7 +130,12 @@ footer p{margin:5px 0;}
         <option value="email">El. paštas</option>
         <option value="sms">SMS</option>
       </select>
-      <button type="submit">Siųsti užklausą</button>
+
+      <div style="margin-top:12px;">
+        <div class="notice">Info: if the promo was applied correctly, price will be €0.00.</div>
+      </div>
+
+      <button type="submit" id="submitBtn">Siųsti užklausą</button>
     </form>
     <div class="btn-row"><button onclick="resetOrder()">Pradėti naują</button></div>
   </div>
@@ -129,8 +149,28 @@ footer p{margin:5px 0;}
 
 <script>
 let currentStep=1;
-let order={type:"",object:"",text:"",color:"",price:0};
+let order={type:"",object:"",text:"",color:"",price:0, promoApplied:false};
 
+// ---- CLIENT-SIDE PROMO (works immediately but IS NOT SECURE) ----
+// Exact promo code to match (visible in client JS) — THIS IS INSECURE.
+const PROMO_CODE = "100!OFF"; // exact match required
+
+document.getElementById('applyPromoBtn').addEventListener('click', () => {
+  const val = document.getElementById('promo').value.trim();
+  const msg = document.getElementById('promoMessage');
+  if(!val){ msg.textContent = 'Įveskite kodą prieš taikant.'; return; }
+  if(val === PROMO_CODE){
+    order.promoApplied = true;
+    msg.textContent = 'Akcija pritaikyta — kaina nustatyta į €0.00';
+    msg.style.color = 'green';
+  } else {
+    order.promoApplied = false;
+    msg.textContent = 'Neteisingas akcijos kodas.';
+    msg.style.color = 'crimson';
+  }
+});
+
+// ---- UI flow ----
 function nextStep(step){
   document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
   document.getElementById('step'+step).classList.add('active');
@@ -147,7 +187,11 @@ function validateAndNext(step){
   if(!obj){alert("Įveskite objektą prieš tęsiant.");return;}
   order.type=type;order.object=obj;nextStep(step);
 }
-function calculatePrice(){order.price=(order.type.includes("3D"))?12.00:4.99;}
+function calculatePrice(){
+  // base prices
+  const base = (order.type && order.type.includes("3D")) ? 12.00 : 4.99;
+  order.price = order.promoApplied ? 0.00 : base;
+}
 function showSummary(){
   order.text=document.getElementById("customText").value.trim();
   order.color=document.getElementById("color").value;
@@ -168,10 +212,21 @@ function showSummary(){
   nextStep(4);
 }
 function resetOrder(){
-  order={type:"",object:"",text:"",color:"",price:0};
+  order={type:"",object:"",text:"",color:"",price:0,promoApplied:false};
   document.getElementById("orderForm").reset();
+  document.getElementById('promoMessage').textContent = '';
+  document.getElementById('promo').value = '';
   nextStep(1);
 }
+
+// Optional: prevent accidental public misuse — warn user before submit if promo was applied
+document.getElementById('orderForm').addEventListener('submit', (e)=>{
+  if(order.promoApplied){
+    const confirmSend = confirm('Promo code pritaikytas — tikrai norite siųsti šią užklausą nemokamai?');
+    if(!confirmSend){ e.preventDefault(); return; }
+  }
+  // If you later set up server proxy, replace default submit behavior with fetch('/api/submit', ...) to hide promo logic.
+});
 </script>
 </body>
 </html>
