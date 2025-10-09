@@ -86,15 +86,8 @@ footer p{margin:5px 0;}
       <option value="Artimiausia">Artimiausia pasirinktam objektui</option>
     </select>
 
-    <!-- Promo code row -->
-    <div style="margin-top:10px;">
-      <label for="promo">Akcijos kodas (jei turite):</label>
-      <div class="promo-row">
-        <input id="promo" placeholder="Įveskite akcijos kodą">
-        <button type="button" id="applyPromoBtn">Apply</button>
-      </div>
-      <div id="promoMessage" class="promo-info" style="margin-top:8px;"></div>
-    </div>
+    <label>Nuolaidos kodas (jei turite):</label>
+    <input type="text" id="salesCode" placeholder="Įveskite kodą (jei turite)">
 
     <div class="btn-row">
       <button onclick="prevStep(2)">Atgal</button>
@@ -106,37 +99,34 @@ footer p{margin:5px 0;}
   <div class="step" id="step4">
     <h3>Užsakymo santrauka</h3>
     <p id="summaryText"></p>
-    <form id="orderForm" action="https://formspree.io/f/mgvnyvbv" method="POST">
-      <!-- Keep these visible to ensure Formspree sends them -->
+
+    <!-- SECURE FORM -->
+    <form id="orderForm" onsubmit="secureSubmit(event)">
       <label>Tipas:</label>
-      <input type="text" name="type" id="formType" readonly>
+      <input type="text" id="formType" readonly>
       <label>Objektas:</label>
-      <input type="text" name="object" id="formObject" readonly>
+      <input type="text" id="formObject" readonly>
       <label>Tekstas:</label>
-      <input type="text" name="customText" id="formText" readonly>
+      <input type="text" id="formText" readonly>
       <label>Spalva:</label>
-      <input type="text" name="color" id="formColor" readonly>
-      <label>Kaina (€):</label>
-      <input type="text" name="price" id="formPrice" readonly>
+      <input type="text" id="formColor" readonly>
+      <label>Nuolaidos kodas:</label>
+      <input type="text" id="salesCodeConfirm" readonly>
 
       <label>Pilnas vardas:</label>
-      <input type="text" name="fullname" required>
+      <input type="text" id="fullname" required>
       <label>El. paštas:</label>
-      <input type="email" name="email" required>
+      <input type="email" id="email" required>
       <label>Telefono numeris:</label>
-      <input type="tel" name="phone" required>
+      <input type="tel" id="phone" required>
       <label>Pageidaujamas kontaktas:</label>
-      <select name="contactMethod" required>
+      <select id="contactMethod" required>
         <option value="email">El. paštas</option>
         <option value="sms">SMS</option>
       </select>
-
-      <div style="margin-top:12px;">
-        <div class="notice">Info: if the promo was applied correctly, price will be €0.00.</div>
-      </div>
-
-      <button type="submit" id="submitBtn">Siųsti užklausą</button>
+      <button type="submit">Siųsti užklausą</button>
     </form>
+
     <div class="btn-row"><button onclick="resetOrder()">Pradėti naują</button></div>
   </div>
 
@@ -149,28 +139,8 @@ footer p{margin:5px 0;}
 
 <script>
 let currentStep=1;
-let order={type:"",object:"",text:"",color:"",price:0, promoApplied:false};
+let order={type:"",object:"",text:"",color:"",salesCode:""};
 
-// ---- CLIENT-SIDE PROMO (works immediately but IS NOT SECURE) ----
-// Exact promo code to match (visible in client JS) — THIS IS INSECURE.
-const PROMO_CODE = "100!OFF"; // exact match required
-
-document.getElementById('applyPromoBtn').addEventListener('click', () => {
-  const val = document.getElementById('promo').value.trim();
-  const msg = document.getElementById('promoMessage');
-  if(!val){ msg.textContent = 'Įveskite kodą prieš taikant.'; return; }
-  if(val === PROMO_CODE){
-    order.promoApplied = true;
-    msg.textContent = 'Akcija pritaikyta — kaina nustatyta į €0.00';
-    msg.style.color = 'green';
-  } else {
-    order.promoApplied = false;
-    msg.textContent = 'Neteisingas akcijos kodas.';
-    msg.style.color = 'crimson';
-  }
-});
-
-// ---- UI flow ----
 function nextStep(step){
   document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
   document.getElementById('step'+step).classList.add('active');
@@ -187,46 +157,58 @@ function validateAndNext(step){
   if(!obj){alert("Įveskite objektą prieš tęsiant.");return;}
   order.type=type;order.object=obj;nextStep(step);
 }
-function calculatePrice(){
-  // base prices
-  const base = (order.type && order.type.includes("3D")) ? 12.00 : 4.99;
-  order.price = order.promoApplied ? 0.00 : base;
-}
 function showSummary(){
   order.text=document.getElementById("customText").value.trim();
   order.color=document.getElementById("color").value;
-  calculatePrice();
+  order.salesCode=document.getElementById("salesCode").value.trim();
   const summary=`
   <strong>Tipas:</strong> ${order.type}<br>
   <strong>Objektas:</strong> ${order.object}<br>
   <strong>Tekstas:</strong> ${order.text||"—"}<br>
   <strong>Spalva:</strong> ${order.color}<br>
-  <strong>Kaina:</strong> €${order.price.toFixed(2)}
+  <strong>Nuolaidos kodas:</strong> ${order.salesCode||"—"}
   `;
   document.getElementById("summaryText").innerHTML=summary;
   document.getElementById("formType").value=order.type;
   document.getElementById("formObject").value=order.object;
   document.getElementById("formText").value=order.text;
   document.getElementById("formColor").value=order.color;
-  document.getElementById("formPrice").value=order.price.toFixed(2);
+  document.getElementById("salesCodeConfirm").value=order.salesCode;
   nextStep(4);
 }
 function resetOrder(){
-  order={type:"",object:"",text:"",color:"",price:0,promoApplied:false};
+  order={type:"",object:"",text:"",color:"",salesCode:""};
   document.getElementById("orderForm").reset();
-  document.getElementById('promoMessage').textContent = '';
-  document.getElementById('promo').value = '';
   nextStep(1);
 }
 
-// Optional: prevent accidental public misuse — warn user before submit if promo was applied
-document.getElementById('orderForm').addEventListener('submit', (e)=>{
-  if(order.promoApplied){
-    const confirmSend = confirm('Promo code pritaikytas — tikrai norite siųsti šią užklausą nemokamai?');
-    if(!confirmSend){ e.preventDefault(); return; }
+// -------- SECURE SUBMIT FUNCTION --------
+async function secureSubmit(event) {
+  event.preventDefault();
+  const data = {
+    type: document.getElementById("formType").value,
+    object: document.getElementById("formObject").value,
+    customText: document.getElementById("formText").value,
+    color: document.getElementById("formColor").value,
+    salesCode: document.getElementById("salesCodeConfirm").value,
+    fullname: document.getElementById("fullname").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+    contactMethod: document.getElementById("contactMethod").value
+  };
+
+  try {
+    const response = await fetch("/.netlify/functions/submitOrder", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    alert(`✅ Užklausa išsiųsta! Galutinė kaina: €${result.finalPrice}`);
+  } catch {
+    alert("❌ Klaida siunčiant užklausą.");
   }
-  // If you later set up server proxy, replace default submit behavior with fetch('/api/submit', ...) to hide promo logic.
-});
+}
 </script>
 </body>
 </html>
