@@ -40,10 +40,26 @@ footer p{margin:5px 0;}
 .promo-row{display:flex;gap:10px;align-items:center;}
 .promo-info{font-size:0.95rem;color:rgba(0,0,0,0.7);}
 .notice{font-size:0.9rem;color:#0b5;padding:8px;background:rgba(0,0,0,0.03);border-radius:8px;}
+.access-overlay{
+  position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  background:rgba(255,255,255,0.8);backdrop-filter:blur(10px);z-index:9999;text-align:center;
+}
+.access-overlay h2{margin-bottom:15px;color:#333;}
+.access-overlay input{max-width:180px;margin-bottom:10px;text-align:center;}
+.access-overlay button{max-width:200px;}
 </style>
 </head>
 <body>
-<div class="glass" id="glassBox">
+
+<!-- Admin access gate -->
+<div class="access-overlay" id="accessOverlay">
+  <h2>Įveskite administratoriaus kodą</h2>
+  <input type="password" id="accessCode" placeholder="****" maxlength="8" />
+  <button onclick="verifyAccess()">Tęsti</button>
+  <p id="accessMsg" style="color:red;margin-top:10px;font-size:0.95rem;"></p>
+</div>
+
+<div class="glass" id="glassBox" style="display:none;">
   <h1>Pasaulinukai Lietuva</h1>
   <h2 class="slogan">Pasaulis ant tavo raktų</h2>
 
@@ -100,7 +116,6 @@ footer p{margin:5px 0;}
     <h3>Užsakymo santrauka</h3>
     <p id="summaryText"></p>
 
-    <!-- SECURE FORM -->
     <form id="orderForm" onsubmit="secureSubmit(event)">
       <label>Tipas:</label>
       <input type="text" id="formType" readonly>
@@ -138,6 +153,37 @@ footer p{margin:5px 0;}
 <footer><p>All rights reserved Pasaulinukai 2025</p></footer>
 
 <script>
+// ---------------- ADMIN ACCESS ----------------
+async function verifyAccess() {
+  const code = document.getElementById("accessCode").value.trim();
+  const msg = document.getElementById("accessMsg");
+
+  if (!code) {
+    msg.textContent = "Įveskite kodą.";
+    return;
+  }
+
+  try {
+    const res = await fetch("/.netlify/functions/checkAdminCode", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById("accessOverlay").style.display = "none";
+      document.getElementById("glassBox").style.display = "flex";
+    } else {
+      msg.textContent = "Neteisingas kodas. Prieiga uždrausta.";
+      setTimeout(() => { window.location.replace("https://google.com"); }, 1500);
+    }
+  } catch {
+    msg.textContent = "Klaida tikrinant kodą.";
+  }
+}
+
+// ---------------- ORDER LOGIC ----------------
 let currentStep=1;
 let order={type:"",object:"",text:"",color:"",salesCode:""};
 
