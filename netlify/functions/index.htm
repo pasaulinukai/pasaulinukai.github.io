@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pasaulinukai Lietuva</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:radial-gradient(circle at top center,#b9fbc0,#a3d5ff);
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;color:#111;overflow-x:hidden;
+}
+.glass{
+  margin-top:4vh;background:rgba(255,255,255,0.25);border-radius:28px;padding:30px 40px;
+  backdrop-filter:blur(25px)saturate(180%);-webkit-backdrop-filter:blur(25px)saturate(180%);
+  border:1px solid rgba(255,255,255,0.3);box-shadow:0 12px 40px rgba(0,0,0,0.25),
+  inset 0 0 40px rgba(255,255,255,0.05),0 0 80px rgba(255,255,255,0.2);
+  width:90%;max-width:850px;display:flex;flex-direction:column;gap:20px;text-align:center;
+  transform:translateY(20px);transition:all 0.6s ease;animation:floaty 5s ease-in-out infinite;
+}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+h1{font-size:2.5rem;font-weight:700;background:linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+h2.slogan{font-size:1.2rem;color:rgba(20,20,20,0.75);}
+.btn-link{display:inline-block;margin-top:10px;padding:10px 20px;background:#007aff;color:#fff;
+  border-radius:12px;text-decoration:none;font-weight:600;}
+.step{display:none;flex-direction:column;gap:15px;}
+.step.active{display:flex;}
+input,select,button{padding:12px 16px;border-radius:12px;border:none;font-size:1rem;outline:none;width:100%;}
+button{cursor:pointer;background:linear-gradient(90deg,#7bafff,#a3d5ff);color:#fff;font-weight:600;
+  transition:transform 0.2s ease,box-shadow 0.3s ease;}
+button:hover{transform:scale(1.05);box-shadow:0 0 20px rgba(123,175,255,0.5);}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.prototype-message{background:rgba(255,255,255,0.3);border-radius:18px;padding:15px 20px;
+  backdrop-filter:blur(15px)saturate(160%);-webkit-backdrop-filter:blur(15px)saturate(160%);
+  border:1px solid rgba(255,255,255,0.4);font-size:1rem;color:rgba(0,0,0,0.85);}
+footer{font-size:0.95rem;opacity:0.85;padding:25px;text-align:center;}
+footer p{margin:5px 0;}
+.promo-row{display:flex;gap:10px;align-items:center;}
+.promo-info{font-size:0.95rem;color:rgba(0,0,0,0.7);}
+.notice{font-size:0.9rem;color:#0b5;padding:8px;background:rgba(0,0,0,0.03);border-radius:8px;}
+.access-overlay{
+  position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  background:rgba(255,255,255,0.8);backdrop-filter:blur(10px);z-index:9999;text-align:center;
+}
+.access-overlay h2{margin-bottom:15px;color:#333;}
+.access-overlay input{max-width:180px;margin-bottom:10px;text-align:center;}
+.access-overlay button{max-width:200px;}
+</style>
+</head>
+<body>
+
+<!-- Admin access gate -->
+<div class="access-overlay" id="accessOverlay">
+  <h2>Įveskite administratoriaus kodą</h2>
+  <input type="password" id="accessCode" placeholder="****" maxlength="8" />
+  <button onclick="verifyAccess()">Tęsti</button>
+  <p id="accessMsg" style="color:red;margin-top:10px;font-size:0.95rem;"></p>
+</div>
+
+<div class="glass" id="glassBox" style="display:none;">
+  <h1>Pasaulinukai Lietuva</h1>
+  <h2 class="slogan">Pasaulis ant tavo raktų</h2>
+
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog"
+     target="_blank" class="btn-link">Užpildyti per Google Forms</a>
+  <p>Arba tęskite užsakymą svetainėje:</p>
+
+  <!-- Step 1 -->
+  <div class="step active" id="step1">
+    <label for="type">Pasirinkite tipą:</label>
+    <select id="type">
+      <option value="3D spausdinimas">3D spausdinimas (€12)</option>
+      <option value="Medžio graviravimas">Medžio graviravimas (€4.99)</option>
+    </select>
+    <label for="object">Įveskite objektą:</label>
+    <input type="text" id="object" placeholder="Įveskite figūrą ar gyvūną">
+    <div class="btn-row"><button onclick="validateAndNext(2)">Toliau</button></div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step" id="step2">
+    <label for="customText">Įveskite tekstą (max 8 raidės):</label>
+    <input type="text" id="customText" maxlength="8" placeholder="Tekstas">
+    <div class="btn-row">
+      <button onclick="prevStep(1)">Atgal</button>
+      <button onclick="nextStep(3)">Toliau</button>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step" id="step3">
+    <label for="color">Pasirinkite spalvą:</label>
+    <select id="color">
+      <option value="Pilka">Pilka (numatyta)</option>
+      <option value="Raudona">Raudona</option>
+      <option value="Mėlyna">Mėlyna</option>
+      <option value="Žalia">Žalia</option>
+      <option value="Juoda">Juoda</option>
+      <option value="Balta">Balta</option>
+      <option value="Artimiausia">Artimiausia pasirinktam objektui</option>
+    </select>
+
+    <label>Nuolaidos kodas (jei turite):</label>
+    <input type="text" id="salesCode" placeholder="Įveskite kodą (jei turite)">
+
+    <div class="btn-row">
+      <button onclick="prevStep(2)">Atgal</button>
+      <button onclick="showSummary()">Baigti</button>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="step" id="step4">
+    <h3>Užsakymo santrauka</h3>
+    <p id="summaryText"></p>
+
+    <form id="orderForm" onsubmit="secureSubmit(event)">
+      <label>Tipas:</label>
+      <input type="text" id="formType" readonly>
+      <label>Objektas:</label>
+      <input type="text" id="formObject" readonly>
+      <label>Tekstas:</label>
+      <input type="text" id="formText" readonly>
+      <label>Spalva:</label>
+      <input type="text" id="formColor" readonly>
+      <label>Nuolaidos kodas:</label>
+      <input type="text" id="salesCodeConfirm" readonly>
+
+      <label>Pilnas vardas:</label>
+      <input type="text" id="fullname" required>
+      <label>El. paštas:</label>
+      <input type="email" id="email" required>
+      <label>Telefono numeris:</label>
+      <input type="tel" id="phone" required>
+      <label>Pageidaujamas kontaktas:</label>
+      <select id="contactMethod" required>
+        <option value="email">El. paštas</option>
+        <option value="sms">SMS</option>
+      </select>
+      <button type="submit">Siųsti užklausą</button>
+    </form>
+
+    <div class="btn-row"><button onclick="resetOrder()">Pradėti naują</button></div>
+  </div>
+
+  <div class="prototype-message">
+    Ši svetainė yra tik prototipas ir dar neveikia pilnai. Prašome nesugaišti savo laiko bandant pateikti užsakymą.
+  </div>
+</div>
+
+<footer><p>All rights reserved Pasaulinukai 2025</p></footer>
+
+<script>
+// ---------------- ADMIN ACCESS ----------------
+async function verifyAccess() {
+  const code = document.getElementById("accessCode").value.trim();
+  const msg = document.getElementById("accessMsg");
+
+  if (!code) {
+    msg.textContent = "Įveskite kodą.";
+    return;
+  }
+
+  try {
+    const res = await fetch("/.netlify/functions/checkAdminCode", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById("accessOverlay").style.display = "none";
+      document.getElementById("glassBox").style.display = "flex";
+    } else {
+      msg.textContent = "Neteisingas kodas. Prieiga uždrausta.";
+      setTimeout(() => { window.location.replace("https://google.com"); }, 1500);
+    }
+  } catch {
+    msg.textContent = "Klaida tikrinant kodą.";
+  }
+}
+
+// ---------------- ORDER LOGIC ----------------
+let currentStep=1;
+let order={type:"",object:"",text:"",color:"",salesCode:""};
+
+function nextStep(step){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step'+step).classList.add('active');
+  currentStep=step;
+}
+function prevStep(step){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step'+step).classList.add('active');
+  currentStep=step;
+}
+function validateAndNext(step){
+  const type=document.getElementById("type").value;
+  const obj=document.getElementById("object").value.trim();
+  if(!obj){alert("Įveskite objektą prieš tęsiant.");return;}
+  order.type=type;order.object=obj;nextStep(step);
+}
+function showSummary(){
+  order.text=document.getElementById("customText").value.trim();
+  order.color=document.getElementById("color").value;
+  order.salesCode=document.getElementById("salesCode").value.trim();
+  const summary=`
+  <strong>Tipas:</strong> ${order.type}<br>
+  <strong>Objektas:</strong> ${order.object}<br>
+  <strong>Tekstas:</strong> ${order.text||"—"}<br>
+  <strong>Spalva:</strong> ${order.color}<br>
+  <strong>Nuolaidos kodas:</strong> ${order.salesCode||"—"}
+  `;
+  document.getElementById("summaryText").innerHTML=summary;
+  document.getElementById("formType").value=order.type;
+  document.getElementById("formObject").value=order.object;
+  document.getElementById("formText").value=order.text;
+  document.getElementById("formColor").value=order.color;
+  document.getElementById("salesCodeConfirm").value=order.salesCode;
+  nextStep(4);
+}
+function resetOrder(){
+  order={type:"",object:"",text:"",color:"",salesCode:""};
+  document.getElementById("orderForm").reset();
+  nextStep(1);
+}
+
+// -------- SECURE SUBMIT FUNCTION --------
+async function secureSubmit(event) {
+  event.preventDefault();
+  const data = {
+    type: document.getElementById("formType").value,
+    object: document.getElementById("formObject").value,
+    customText: document.getElementById("formText").value,
+    color: document.getElementById("formColor").value,
+    salesCode: document.getElementById("salesCodeConfirm").value,
+    fullname: document.getElementById("fullname").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+    contactMethod: document.getElementById("contactMethod").value
+  };
+
+  try {
+    const response = await fetch("/.netlify/functions/submitOrder", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    alert(`✅ Užklausa išsiųsta! Galutinė kaina: €${result.finalPrice}`);
+  } catch {
+    alert("❌ Klaida siunčiant užklausą.");
+  }
+}
+</script>
+</body>
+</html>
